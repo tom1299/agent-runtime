@@ -26,7 +26,7 @@ services:
         http_proxy: ${http_proxy}
         https_proxy: ${https_proxy}
         no_proxy: ${no_proxy}
-    entrypoint: ./init-copilot.sh
+    entrypoint: /init-copilot.sh
     command: ["sleep", "infinity"]
     depends_on:
       - buildkitd
