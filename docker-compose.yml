@@ -2,6 +2,9 @@ services:
   copilot:
     container_name: copilot
     image: copilot-agent-image
+    # Runsc prevents dns resolution in the container per default.
+    # See https://gvisor.dev/docs/user_guide/faq/
+    # runtime: runsc
     environment:
       - http_proxy=${http_proxy}
       - https_proxy=${https_proxy}

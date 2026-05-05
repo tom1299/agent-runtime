@@ -20,6 +20,13 @@ Attach to the copilot container:
 docker exec -it copilot bash
 ```
 
+## Copilot authentication
+Run
+```
+gh auth token
+```
+on host. Put token in `.env` or export as env var `GITHUB_TOKEN=gho....`
+
 ## DNS Configuration
 
 DNS is configured in two places:
