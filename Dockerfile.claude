@@ -1,0 +1,27 @@
+FROM agent-base:latest
+
+ARG http_proxy
+ARG https_proxy
+ARG no_proxy
+ARG USER_NAME=ubuntu
+ARG USER_UID=1000
+ARG USER_GID=1000
+
+USER 0
+
+RUN apt-get update && apt-get install -y gpg
+
+ARG CLAUDE_GPG_FINGERPRINT=31DDDE24DDFAB679F42D7BD2BAA929FF1A7ECACE
+RUN install -d -m 0755 /etc/apt/keyrings \
+    && curl -fsSL https://downloads.claude.ai/keys/claude-code.asc \
+      -o /etc/apt/keyrings/claude-code.asc \
+    && [ $(gpg --show-keys /etc/apt/keyrings/claude-code.asc | awk 'NR==2' | tr -d '[:space:]') = "${CLAUDE_GPG_FINGERPRINT}" ] \
+    && echo "deb [signed-by=/etc/apt/keyrings/claude-code.asc] https://downloads.claude.ai/claude-code/apt/stable stable main" \
+      | tee /etc/apt/sources.list.d/claude-code.list \
+    && echo "deb [signed-by=/etc/apt/keyrings/claude-code.asc] https://downloads.claude.ai/claude-code/apt/stable stable main" | tee /etc/apt/sources.list.d/claude-code.list \
+    && apt-get update && apt-get install -y --show-progress -y claude-code=2.1.126-1
+
+USER ${USER_NAME}
+WORKDIR /workspace
+
+CMD ["sleep", "infinity"]
