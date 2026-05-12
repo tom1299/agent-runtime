@@ -12,14 +12,22 @@ USER 0
 RUN apt-get update && apt-get install -y gpg
 
 ARG CLAUDE_GPG_FINGERPRINT=31DDDE24DDFAB679F42D7BD2BAA929FF1A7ECACE
+ARG CLAUDE_CODE_VERSION=2.1.126
+ARG REPO=https://downloads.claude.ai
 RUN install -d -m 0755 /etc/apt/keyrings \
-    && curl -fsSL https://downloads.claude.ai/keys/claude-code.asc \
+    && curl -fsSL ${REPO}/keys/claude-code.asc \
       -o /etc/apt/keyrings/claude-code.asc \
     && [ $(gpg --show-keys /etc/apt/keyrings/claude-code.asc | awk 'NR==2' | tr -d '[:space:]') = "${CLAUDE_GPG_FINGERPRINT}" ] \
-    && echo "deb [signed-by=/etc/apt/keyrings/claude-code.asc] https://downloads.claude.ai/claude-code/apt/stable stable main" \
+    && gpg --import /etc/apt/keyrings/claude-code.asc \
+    && echo "deb [signed-by=/etc/apt/keyrings/claude-code.asc] ${REPO}/claude-code/apt/stable stable main" \
       | tee /etc/apt/sources.list.d/claude-code.list \
-    && echo "deb [signed-by=/etc/apt/keyrings/claude-code.asc] https://downloads.claude.ai/claude-code/apt/stable stable main" | tee /etc/apt/sources.list.d/claude-code.list \
-    && apt-get update && apt-get install -y --show-progress -y claude-code=2.1.126-1
+    && echo "deb [signed-by=/etc/apt/keyrings/claude-code.asc] ${REPO}/claude-code/apt/stable stable main" | tee /etc/apt/sources.list.d/claude-code.list \
+    && apt-get update && apt-get install -y --show-progress -y claude-code=$CLAUDE_CODE_VERSION-1 \
+    && curl -fsSLO "$REPO/claude-code-releases/$CLAUDE_CODE_VERSION/manifest.json" \
+    && curl -fsSLO "$REPO/claude-code-releases/$CLAUDE_CODE_VERSION/manifest.json.sig" \
+    && gpg --verify manifest.json.sig manifest.json \
+    && echo $(jq -r '.platforms["linux-x64"].checksum' manifest.json) /usr/bin/claude | sha256sum -c - \
+    && rm manifest.json manifest.json.sig
 
 USER ${USER_NAME}
 WORKDIR /workspace
