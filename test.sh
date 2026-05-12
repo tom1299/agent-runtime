@@ -6,19 +6,19 @@ cd "$SCRIPT_DIR"
 
 cleanup() {
   echo "=== Tearing down ==="
-  docker-compose down
+  docker compose down
 }
 trap cleanup EXIT
 
 echo "=== Starting services ==="
-docker-compose up -d --build
+docker compose up -d --build
 
 echo "=== Waiting for services to be running ==="
-EXPECTED=3
-until [ "$(docker-compose ps --filter status=running --services | wc -l)" -eq "$EXPECTED" ]; do
+EXPECTED=4
+until [ "$(docker compose ps --filter status=running --services | wc -l)" -eq "$EXPECTED" ]; do
   sleep 1
 done
-docker-compose ps
+docker compose ps
 
 echo "=== Running DNS test via buildctl (BuildKit) ==="
 docker exec copilot sh -c '

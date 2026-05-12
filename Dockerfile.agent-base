@@ -61,8 +61,5 @@ RUN curl -fsSL -o /tmp/docker.tgz \
 
 COPY --from=buildkit /usr/bin/buildctl /usr/bin/buildctl
 
-COPY init-copilot.sh /init-copilot.sh
-RUN chmod +x /init-copilot.sh
-
 RUN mkdir -p /workspace \
   && chown -R ${USER_UID}:${USER_GID} /home/${USER_NAME} /workspace

@@ -1,7 +1,7 @@
 services:
   copilot:
     container_name: copilot
-    image: copilot-agent-image
+    image: copilot-agent:latest
     # Runsc prevents dns resolution in the container per default.
     # See https://gvisor.dev/docs/user_guide/faq/
     # runtime: runsc
@@ -24,12 +24,54 @@ services:
       - HARBOR_HOST=${HARBOR_HOST}
     build:
       context: .
-      dockerfile: Dockerfile.cloud
+      dockerfile: Dockerfile.copilot
       args:
         http_proxy: ${http_proxy}
         https_proxy: ${https_proxy}
         no_proxy: ${no_proxy}
-    entrypoint: /init-copilot.sh
+    entrypoint: /init-agent-tools.sh
+    command: ["sleep", "infinity"]
+    depends_on:
+      - buildkitd
+      - dind
+    working_dir: /workspace
+    volumes:
+      - ${WORKSPACE_DIR:-..}:/workspace
+    stdin_open: true
+    tty: true
+
+  claude:
+    container_name: claude
+    image: claude-agent:latest
+    # Runsc prevents dns resolution in the container per default.
+    # See https://gvisor.dev/docs/user_guide/faq/
+    # runtime: runsc
+    environment:
+      - http_proxy=${http_proxy}
+      - https_proxy=${https_proxy}
+      - no_proxy=dind,buildkitd,${no_proxy}
+      - HTTP_PROXY=${http_proxy}
+      - HTTPS_PROXY=${https_proxy}
+      - NO_PROXY=dind,buildkitd,${no_proxy}
+      - BUILDKIT_HOST=tcp://buildkitd:1234
+      - DOCKER_HOST=tcp://dind:2375
+      - GL_TOKEN=${GL_TOKEN}
+      - GH_TOKEN=${GH_TOKEN}
+      - GITLAB_API_HOST=${GITLAB_API_HOST}
+      - GITLAB_REGISTRY_HOST=${GITLAB_REGISTRY_HOST}
+      - GITLAB_INTERNAL_REGISTRY_HOST=${GITLAB_INTERNAL_REGISTRY_HOST}
+      - HARBOR_TOKEN=${HARBOR_TOKEN}
+      - HARBOR_USERNAME=${HARBOR_USERNAME}
+      - HARBOR_HOST=${HARBOR_HOST}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    build:
+      context: .
+      dockerfile: Dockerfile.claude
+      args:
+        http_proxy: ${http_proxy}
+        https_proxy: ${https_proxy}
+        no_proxy: ${no_proxy}
+    entrypoint: /init-agent-tools.sh
     command: ["sleep", "infinity"]
     depends_on:
       - buildkitd

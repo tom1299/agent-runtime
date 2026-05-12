@@ -15,8 +15,8 @@ RUN curl -fsSL -o /tmp/copilot.tar.gz \
     && tar -xzf /tmp/copilot.tar.gz -C /usr/local/bin \
     && rm /tmp/copilot.tar.gz
 
-COPY init-copilot.sh /init-copilot.sh
-RUN chmod +x /init-copilot.sh
+COPY init-agent-tools.sh /init-agent-tools.sh
+RUN chmod +x /init-agent-tools.sh
 
 USER ${USER_NAME}
 WORKDIR /workspace

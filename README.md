@@ -5,7 +5,7 @@
 Start all services:
 
 ```bash
-DNS_SERVER=10.33.255.21 docker-compose up
+DNS_SERVER=10.33.255.21 WORKSPACE_DIR=~/git/github/agent-runtime docker-compose up
 ```
 
 Rebuild the copilot image without cache:
