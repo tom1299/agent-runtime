@@ -1,0 +1,9 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: agent-runtime
+nodes:
+  - role: control-plane
+    image: sha256:9e5c5e8fa82f7f7cbae86a2c5db507fa0eb5331235feca6ec46b9880c24b0733
+    extraMounts:
+      - hostPath: /home/treuhl/git/github/agent-runtime
+        containerPath: /workspace

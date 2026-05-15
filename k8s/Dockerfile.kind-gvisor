@@ -1,0 +1,21 @@
+FROM kindest/node:v1.35.1@sha256:05d7bcdefbda08b4e038f644c4df690cdac3fba8b06f8289f30e10026720a1ab
+
+ARG GVISOR_VERSION=20260511
+ARG RUNSC_CHECKSUM=e227a71c95e794119f6648a44083df945392c6cd457f36abbc49c2b6e0b87c7f01b94e6bf4632f4cb22ee34fbec7a2c34ca03d30efa9c689db76a6215a6e44e1
+ARG SHIM_RUNSC_CHECKSUM=69d7c9e04dacc3c983016624050a53381326bd1d221f6f5879e1109bae76f1ded91101c7235aa289304852f64c5789c726ad94f0099beb22573078f681c6b529
+ARG GVISOR_REPO=https://storage.googleapis.com/gvisor/releases/release/${GVISOR_VERSION}/x86_64
+
+RUN curl -fLO "${GVISOR_REPO}/runsc" \
+    && echo "${RUNSC_CHECKSUM}  runsc" | sha512sum -c - \
+    && mv runsc /usr/local/bin/ \
+    && chmod a+rx /usr/local/bin/runsc \
+    && curl -fLO "${GVISOR_REPO}/containerd-shim-runsc-v1" \
+    && echo "${SHIM_RUNSC_CHECKSUM}  containerd-shim-runsc-v1" | sha512sum -c - \
+    && mv containerd-shim-runsc-v1 /usr/local/bin/ \
+    && chmod a+rx /usr/local/bin/containerd-shim-runsc-v1
+
+RUN cat <<'EOF' >> /etc/containerd/config.toml
+
+[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runsc]
+  runtime_type = "io.containerd.runsc.v1"
+EOF
