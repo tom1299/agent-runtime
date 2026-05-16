@@ -9,17 +9,23 @@ group "agents" {
 target "agent-base" {
   context = "."
   dockerfile = "Dockerfile.agent-base"
-  tags = ["agent-base:latest"]
+  tags = [
+      "ghcr.io/tom1299/agent-runtime/agent-base:latest"
+  ]
 }
 
 target "copilot-agent" {
   context = "."
   dockerfile = "Dockerfile.copilot"
-  tags = ["copilot-agent:latest"]
+  tags = [
+      "ghcr.io/tom1299/agent-runtime/copilot-agent:latest"
+  ]
 }
 
 target "claude-agent" {
   context = "."
   dockerfile = "Dockerfile.claude"
-  tags = ["claude-agent:latest"]
+  tags = [
+      "ghcr.io/tom1299/agent-runtime/claude-agent:latest"
+  ]
 }
