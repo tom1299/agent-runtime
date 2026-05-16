@@ -53,3 +53,4 @@ docker build \
 '
 
 echo "=== All tests passed ==="
+

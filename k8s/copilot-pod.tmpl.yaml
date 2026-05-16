@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: copilot-work
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+    seccompProfile:
+      type: RuntimeDefault
+  runtimeClassName: gvisor
+  containers:
+    - name: copilot
+      image: ghcr.io/tom1299/agent-runtime/copilot-agent:latest
+      imagePullPolicy: IfNotPresent
+      command: ["sleep", "infinity"]
+      stdin: true
+      tty: true
+      workingDir: /workspace
+      env:
+        - name: GH_TOKEN
+          value: "${GH_TOKEN}"
+      securityContext:
+        privileged: false
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]
+      volumeMounts:
+        - name: repo
+          mountPath: /workspace
+  volumes:
+    - name: repo
+      hostPath:
+        path: /workspace/${REPO_SUBDIR}
+        type: Directory

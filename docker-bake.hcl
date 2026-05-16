@@ -12,6 +12,9 @@ target "agent-base" {
   tags = [
       "ghcr.io/tom1299/agent-runtime/agent-base:latest"
   ]
+  labels = {
+    "org.opencontainers.image.source" = "https://github.com/tom1299/agent-runtime"
+  }
 }
 
 target "copilot-agent" {
@@ -20,6 +23,9 @@ target "copilot-agent" {
   tags = [
       "ghcr.io/tom1299/agent-runtime/copilot-agent:latest"
   ]
+  labels = {
+    "org.opencontainers.image.source" = "https://github.com/tom1299/agent-runtime"
+  }
 }
 
 target "claude-agent" {
@@ -28,4 +34,7 @@ target "claude-agent" {
   tags = [
       "ghcr.io/tom1299/agent-runtime/claude-agent:latest"
   ]
+  labels = {
+    "org.opencontainers.image.source" = "https://github.com/tom1299/agent-runtime"
+  }
 }
