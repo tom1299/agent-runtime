@@ -1,0 +1,39 @@
+FROM agent-base:latest
+
+ARG http_proxy
+ARG https_proxy
+ARG no_proxy
+ARG USER_NAME=ubuntu
+ARG USER_UID=1000
+ARG USER_GID=1000
+
+ARG OPENCODE_VERSION=v1.15.5
+ARG OPENCODE_CHECKSUM=bf6f75da089b22073bcf23754cc3be351f713363164e5bdcd3e49501c811b1c5
+RUN curl -fsSL -o /tmp/opencode.tar.gz \
+      "https://github.com/anomalyco/opencode/releases/download/${OPENCODE_VERSION}/opencode-linux-x64.tar.gz" \
+    && echo "${OPENCODE_CHECKSUM}  /tmp/opencode.tar.gz" | sha256sum -c - \
+    && tar -xzf /tmp/opencode.tar.gz -C /usr/local/bin \
+    && rm /tmp/opencode.tar.gz
+
+COPY init-agent-tools.sh /init-agent-tools.sh
+RUN chmod +x /init-agent-tools.sh
+
+USER ${USER_NAME}
+
+# TODO: Better read the api key from a file: https://opencode.ai/docs/config/#files
+RUN mkdir -p ~/.config/opencode && cat > ~/.config/opencode/opencode.jsonc <<'EOF'
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "opencode": {
+      "options": {
+        "apiKey": "{env:OPENCODE_ZEN_API_KEY}"
+      }
+    }
+  }
+}
+EOF
+
+WORKDIR /workspace
+
+CMD ["sleep", "infinity"]

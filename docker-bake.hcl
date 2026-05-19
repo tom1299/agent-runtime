@@ -3,7 +3,7 @@ group "default" {
 }
 
 group "agents" {
-  targets = ["copilot-agent", "claude-agent"]
+  targets = ["copilot-agent", "claude-agent", "opencode-agent"]
 }
 
 target "agent-base" {
@@ -33,6 +33,17 @@ target "claude-agent" {
   dockerfile = "Dockerfile.claude"
   tags = [
       "ghcr.io/tom1299/agent-runtime/claude-agent:latest"
+  ]
+  labels = {
+    "org.opencontainers.image.source" = "https://github.com/tom1299/agent-runtime"
+  }
+}
+
+target "opencode-agent" {
+  context = "."
+  dockerfile = "Dockerfile.opencode"
+  tags = [
+      "ghcr.io/tom1299/agent-runtime/opencode-agent:latest"
   ]
   labels = {
     "org.opencontainers.image.source" = "https://github.com/tom1299/agent-runtime"
