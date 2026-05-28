@@ -13,7 +13,8 @@ spec:
     spec:
       containers:
       - name: simple-sandbox
-        image: sha256:15046f0e42a8f4acd2af3aad5f8804299e93c308eee0bd34467aa3139455330e
+        image: ${IMAGE_NAME}
+        imagePullPolicy: IfNotPresent
         # 2. Reference the exact name of the volume claim here
         volumeMounts:
         - name: agent-data
