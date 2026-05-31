@@ -1,0 +1,31 @@
+# Update uv: python -m pip install -U uv
+[project]
+name = "agent-sandbox-sdk"
+version = "0.1.0"
+description = "Simple uv-managed Python project"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    #
+    # uv add "k8s-agent-sandbox==0.4.6"
+    "k8s-agent-sandbox==0.4.6",
+]
+
+[project.scripts]
+agent-sandbox-sdk = "agent_sandbox_sdk.cli:main"
+
+[build-system]
+requires = ["setuptools>=82.0", "wheel>=0.47"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]                       # Search for packages in the current directory
+include = ["agent_sandbox_sdk*"]    # Include packages that start with "agent_sandbox_sdk". eg., "agent_sandbox_sdk" and "agent_sandbox_sdk.subpackage"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+]
+
+
+
