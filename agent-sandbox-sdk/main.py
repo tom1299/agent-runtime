@@ -1,5 +1,5 @@
-from agent_sandbox_sdk.cli import main
-
+def main():
+    print("Hello from main()")
 
 if __name__ == "__main__":
     main()
